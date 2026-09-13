@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<testsuite xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="https://maven.apache.org/surefire/maven-surefire-plugin/xsd/surefire-test-report-3.0.xsd" version="3.0" name="com.example.api.StsMavenApiApplicationTests" time="0.566" tests="1" errors="0" skipped="0" failures="0">
+<testsuite xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="https://maven.apache.org/surefire/maven-surefire-plugin/xsd/surefire-test-report-3.0.xsd" version="3.0" name="com.example.api.controller.TvMazeSearchControllerTest" time="2.793" tests="1" errors="0" skipped="0" failures="0">
   <properties>
     <property name="java.specification.version" value="17"/>
     <property name="sun.cpu.isalist" value="amd64"/>
@@ -62,9 +62,9 @@
     <property name="java.class.version" value="61.0"/>
     <property name="LOGGED_APPLICATION_NAME" value="[sts-maven-api] "/>
   </properties>
-  <testcase name="contextLoads" classname="com.example.api.StsMavenApiApplicationTests" time="0.004">
-    <system-out><![CDATA[2026-09-12T18:35:04.633-06:00  INFO 2384 --- [sts-maven-api] [           main] t.c.s.AnnotationConfigContextLoaderUtils : Could not detect default configuration classes for test class [com.example.api.StsMavenApiApplicationTests]: StsMavenApiApplicationTests does not declare any static, non-private, non-final, nested classes annotated with @Configuration.
-2026-09-12T18:35:04.641-06:00  INFO 2384 --- [sts-maven-api] [           main] .b.t.c.SpringBootTestContextBootstrapper : Found @SpringBootConfiguration com.example.api.StsMavenApiApplication for test class com.example.api.StsMavenApiApplicationTests
+  <testcase name="shouldReturnShowsFromSearchQuery" classname="com.example.api.controller.TvMazeSearchControllerTest" time="0.231">
+    <system-out><![CDATA[18:35:01.979 [main] INFO org.springframework.test.context.support.AnnotationConfigContextLoaderUtils -- Could not detect default configuration classes for test class [com.example.api.controller.TvMazeSearchControllerTest]: TvMazeSearchControllerTest does not declare any static, non-private, non-final, nested classes annotated with @Configuration.
+18:35:02.116 [main] INFO org.springframework.boot.test.context.SpringBootTestContextBootstrapper -- Found @SpringBootConfiguration com.example.api.StsMavenApiApplication for test class com.example.api.controller.TvMazeSearchControllerTest
 
   .   ____          _            __ _ _
  /\\ / ___'_ __ _ _(_)_ __  __ _ \ \ \ \
@@ -75,9 +75,12 @@
 
  :: Spring Boot ::                (v3.3.4)
 
-2026-09-12T18:35:04.669-06:00  INFO 2384 --- [sts-maven-api] [           main] c.e.api.StsMavenApiApplicationTests      : Starting StsMavenApiApplicationTests using Java 17.0.12 with PID 2384 (started by Administrador in C:\ATT\falcon-front\sts-maven-api)
-2026-09-12T18:35:04.669-06:00  INFO 2384 --- [sts-maven-api] [           main] c.e.api.StsMavenApiApplicationTests      : No active profile set, falling back to 1 default profile: "default"
-2026-09-12T18:35:05.193-06:00  INFO 2384 --- [sts-maven-api] [           main] c.e.api.StsMavenApiApplicationTests      : Started StsMavenApiApplicationTests in 0.546 seconds (process running for 3.866)
+2026-09-12T18:35:02.520-06:00  INFO 2384 --- [sts-maven-api] [           main] c.e.a.c.TvMazeSearchControllerTest       : Starting TvMazeSearchControllerTest using Java 17.0.12 with PID 2384 (started by Administrador in C:\ATT\falcon-front\sts-maven-api)
+2026-09-12T18:35:02.525-06:00  INFO 2384 --- [sts-maven-api] [           main] c.e.a.c.TvMazeSearchControllerTest       : No active profile set, falling back to 1 default profile: "default"
+2026-09-12T18:35:04.344-06:00  INFO 2384 --- [sts-maven-api] [           main] o.s.b.t.m.w.SpringBootMockServletContext : Initializing Spring TestDispatcherServlet ''
+2026-09-12T18:35:04.345-06:00  INFO 2384 --- [sts-maven-api] [           main] o.s.t.web.servlet.TestDispatcherServlet  : Initializing Servlet ''
+2026-09-12T18:35:04.348-06:00  INFO 2384 --- [sts-maven-api] [           main] o.s.t.web.servlet.TestDispatcherServlet  : Completed initialization in 2 ms
+2026-09-12T18:35:04.364-06:00  INFO 2384 --- [sts-maven-api] [           main] c.e.a.c.TvMazeSearchControllerTest       : Started TvMazeSearchControllerTest in 2.171 seconds (process running for 3.045)
 ]]></system-out>
   </testcase>
 </testsuite>

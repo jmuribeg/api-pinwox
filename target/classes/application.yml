@@ -4,3 +4,6 @@ server:
 spring:
   application:
     name: sts-maven-api
+
+tvmaze:
+  base-url: https://api.tvmaze.com

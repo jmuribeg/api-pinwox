@@ -1,6 +1,10 @@
 com\example\api\handler\ApiExceptionHandler.class
+com\example\api\service\TvMazeSearchService.class
+com\example\api\config\TvMazeConfig.class
 com\example\api\controller\ShowController.class
+com\example\api\controller\TvMazeSearchController.class
 com\example\api\dto\CreateShowRequest.class
+com\example\api\dto\TvMazeShowResponse.class
 com\example\api\StsMavenApiApplication.class
 com\example\api\service\ShowService.class
 com\example\api\controller\HealthController.class
