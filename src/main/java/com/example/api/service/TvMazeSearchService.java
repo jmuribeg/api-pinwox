@@ -1,9 +1,13 @@
 package com.example.api.service;
 
 import com.example.api.client.TvMazeClient;
+import com.example.api.dto.ShowCommentRequest;
+import com.example.api.dto.StatusResponse;
 import com.example.api.dto.TvMazeShowResponse;
 import com.example.api.model.ShowCacheDocument;
+import com.example.api.model.ShowCommentDocument;
 import com.example.api.repository.ShowCacheRepository;
+import com.example.api.repository.ShowCommentRepository;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.stereotype.Service;
@@ -19,13 +23,16 @@ public class TvMazeSearchService {
 
     private final TvMazeClient tvMazeClient;
     private final ShowCacheRepository showCacheRepository;
+    private final ShowCommentRepository showCommentRepository;
     private final ObjectMapper objectMapper;
 
     public TvMazeSearchService(TvMazeClient tvMazeClient,
                                ShowCacheRepository showCacheRepository,
+                               ShowCommentRepository showCommentRepository,
                                ObjectMapper objectMapper) {
         this.tvMazeClient = tvMazeClient;
         this.showCacheRepository = showCacheRepository;
+        this.showCommentRepository = showCommentRepository;
         this.objectMapper = objectMapper;
     }
 
@@ -59,6 +66,25 @@ public class TvMazeSearchService {
         JsonNode payload = tvMazeClient.getShowById(showId);
         showCacheRepository.save(new ShowCacheDocument(showId, writeJson(payload), Instant.now()));
         return payload;
+    }
+
+    public StatusResponse saveComment(ShowCommentRequest request) {
+        if (request == null) {
+            throw new IllegalArgumentException("request is required");
+        }
+        if (request.showId() == null || request.showId() <= 0) {
+            throw new IllegalArgumentException("show_id must be greater than zero");
+        }
+
+        showCommentRepository.save(new ShowCommentDocument(
+                null,
+                request.showId(),
+                request.comment().trim(),
+                request.rating(),
+                Instant.now()
+        ));
+
+        return new StatusResponse("saved");
     }
 
     private TvMazeShowResponse toResponse(JsonNode show) {

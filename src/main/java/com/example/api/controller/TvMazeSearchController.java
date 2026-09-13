@@ -1,13 +1,18 @@
 package com.example.api.controller;
 
+import com.example.api.dto.ShowCommentRequest;
+import com.example.api.dto.StatusResponse;
 import com.example.api.dto.TvMazeShowResponse;
 import com.fasterxml.jackson.databind.JsonNode;
 import jakarta.validation.constraints.Min;
 import com.example.api.service.TvMazeSearchService;
+import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotBlank;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
@@ -33,5 +38,10 @@ public class TvMazeSearchController {
     @GetMapping("/show/{show_id}")
     public JsonNode getShowById(@PathVariable("show_id") @Min(1) Long showId) {
         return tvMazeSearchService.getShowById(showId);
+    }
+
+    @PostMapping("/comments")
+    public StatusResponse saveComment(@Valid @RequestBody ShowCommentRequest request) {
+        return tvMazeSearchService.saveComment(request);
     }
 }

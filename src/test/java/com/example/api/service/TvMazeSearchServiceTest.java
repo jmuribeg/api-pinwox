@@ -3,14 +3,14 @@ package com.example.api.service;
 import com.example.api.client.TvMazeClient;
 import com.example.api.model.ShowCacheDocument;
 import com.example.api.repository.ShowCacheRepository;
+import com.example.api.repository.ShowCommentRepository;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.junit.jupiter.api.BeforeEach;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-
-import org.junit.jupiter.api.BeforeEach;
 
 import java.time.Instant;
 import java.util.Optional;
@@ -31,16 +31,20 @@ class TvMazeSearchServiceTest {
     @Mock
     private ShowCacheRepository showCacheRepository;
 
-            private TvMazeSearchService tvMazeSearchService;
+    @Mock
+    private ShowCommentRepository showCommentRepository;
 
-            @BeforeEach
-            void setUp() {
-            tvMazeSearchService = new TvMazeSearchService(
+    private TvMazeSearchService tvMazeSearchService;
+
+    @BeforeEach
+    void setUp() {
+        tvMazeSearchService = new TvMazeSearchService(
                 tvMazeClient,
                 showCacheRepository,
+                showCommentRepository,
                 objectMapper
-            );
-            }
+        );
+    }
 
     @Test
     void shouldReturnCachedShowWithoutCallingApi() throws Exception {

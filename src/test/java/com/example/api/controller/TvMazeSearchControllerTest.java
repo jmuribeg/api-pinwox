@@ -1,6 +1,8 @@
 package com.example.api.controller;
 
 import com.example.api.dto.TvMazeShowResponse;
+import com.example.api.dto.ShowCommentRequest;
+import com.example.api.dto.StatusResponse;
 import com.example.api.service.TvMazeSearchService;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -16,6 +18,7 @@ import java.util.List;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -76,5 +79,19 @@ class TvMazeSearchControllerTest {
                                 .andExpect(jsonPath("$.language").value("English"));
 
                 verify(tvMazeSearchService).getShowById(139L);
+        }
+
+        @Test
+        void shouldSaveCommentAndReturnStatus() throws Exception {
+                ShowCommentRequest request = new ShowCommentRequest(139L, "Muy buena", 5);
+                when(tvMazeSearchService.saveComment(request)).thenReturn(new StatusResponse("saved"));
+
+                mockMvc.perform(post("/api/v1/comments")
+                                                .contentType(MediaType.APPLICATION_JSON)
+                                                .content(objectMapper.writeValueAsString(request)))
+                                .andExpect(status().isOk())
+                                .andExpect(jsonPath("$.status").value("saved"));
+
+                verify(tvMazeSearchService).saveComment(request);
         }
 }

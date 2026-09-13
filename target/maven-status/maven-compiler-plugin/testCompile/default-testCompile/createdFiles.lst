@@ -1,2 +1,4 @@
-com\example\api\StsMavenApiApplicationTests.class
 com\example\api\controller\TvMazeSearchControllerTest.class
+com\example\api\StsMavenApiApplicationTests.class
+com\example\api\service\TvMazeSearchServiceTest.class
+com\example\api\service\TvMazeSearchCommentServiceTest.class
