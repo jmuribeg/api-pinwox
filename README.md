@@ -27,6 +27,32 @@ La API arranca en `http://localhost:8081`.
 - `GET /api/v1/shows`
 - `GET /api/v1/shows/{id}`
 - `POST /api/v1/shows`
+- `GET /api/v1/search?search_query=girls`
+- `GET /api/v1/show/{show_id}`
+
+### Caché de show en MongoDB
+
+El endpoint `GET /api/v1/show/{show_id}` valida primero si el show existe en MongoDB:
+
+- Si existe, retorna el objeto guardado en la colección `show_cache`.
+- Si no existe, consulta TVMaze, guarda la respuesta en Mongo y luego la retorna.
+
+### Endpoint TVMaze Search
+
+Consumimos `http://api.tvmaze.com/search/shows?q=query` y retornamos un arreglo de shows con:
+
+- `id`
+- `name`
+- `channel` (`network.name` o `webChannel.name`)
+- `summary`
+- `genres`
+
+### Endpoint TVMaze Show
+
+Consumimos `https://api.tvmaze.com/shows/{show_id}` y retornamos el objeto show completo.
+
+- Recibe: `show_id`
+- Retorna: objeto show completo
 
 ### Ejemplo POST
 

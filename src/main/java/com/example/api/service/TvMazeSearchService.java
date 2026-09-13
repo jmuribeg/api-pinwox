@@ -1,22 +1,32 @@
 package com.example.api.service;
 
+import com.example.api.client.TvMazeClient;
 import com.example.api.dto.TvMazeShowResponse;
+import com.example.api.model.ShowCacheDocument;
+import com.example.api.repository.ShowCacheRepository;
 import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
-import org.springframework.web.client.RestClient;
 
+import java.time.Instant;
 import java.util.List;
-import java.util.Map;
+import java.util.Optional;
 import java.util.stream.StreamSupport;
 
 @Service
 public class TvMazeSearchService {
 
-    private final RestClient tvMazeRestClient;
+    private final TvMazeClient tvMazeClient;
+    private final ShowCacheRepository showCacheRepository;
+    private final ObjectMapper objectMapper;
 
-    public TvMazeSearchService(RestClient tvMazeRestClient) {
-        this.tvMazeRestClient = tvMazeRestClient;
+    public TvMazeSearchService(TvMazeClient tvMazeClient,
+                               ShowCacheRepository showCacheRepository,
+                               ObjectMapper objectMapper) {
+        this.tvMazeClient = tvMazeClient;
+        this.showCacheRepository = showCacheRepository;
+        this.objectMapper = objectMapper;
     }
 
     public List<TvMazeShowResponse> searchShows(String searchQuery) {
@@ -24,10 +34,7 @@ public class TvMazeSearchService {
             throw new IllegalArgumentException("search_query is required");
         }
 
-        JsonNode payload = tvMazeRestClient.get()
-                .uri("/search/shows?q={query}", Map.of("query", searchQuery.trim()))
-                .retrieve()
-                .body(JsonNode.class);
+        JsonNode payload = tvMazeClient.searchShows(searchQuery.trim());
 
         if (payload == null || !payload.isArray()) {
             return List.of();
@@ -44,10 +51,14 @@ public class TvMazeSearchService {
             throw new IllegalArgumentException("show_id must be greater than zero");
         }
 
-        return tvMazeRestClient.get()
-                .uri("/shows/{showId}", Map.of("showId", showId))
-                .retrieve()
-                .body(JsonNode.class);
+        Optional<ShowCacheDocument> cachedShow = showCacheRepository.findById(showId);
+        if (cachedShow.isPresent()) {
+            return readJson(cachedShow.get().getPayloadJson());
+        }
+
+        JsonNode payload = tvMazeClient.getShowById(showId);
+        showCacheRepository.save(new ShowCacheDocument(showId, writeJson(payload), Instant.now()));
+        return payload;
     }
 
     private TvMazeShowResponse toResponse(JsonNode show) {
@@ -92,5 +103,21 @@ public class TvMazeSearchService {
         }
         String value = node.asText();
         return StringUtils.hasText(value) ? value : null;
+    }
+
+    private String writeJson(JsonNode node) {
+        try {
+            return objectMapper.writeValueAsString(node);
+        } catch (Exception ex) {
+            throw new IllegalStateException("could not serialize show payload", ex);
+        }
+    }
+
+    private JsonNode readJson(String json) {
+        try {
+            return objectMapper.readTree(json);
+        } catch (Exception ex) {
+            throw new IllegalStateException("could not read cached show payload", ex);
+        }
     }
 }

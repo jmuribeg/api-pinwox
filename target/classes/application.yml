@@ -4,6 +4,10 @@ server:
 spring:
   application:
     name: sts-maven-api
+  data:
+    mongodb:
+      uri: mongodb+srv://jmuribemx_db_user:fh2y9mGgWqh67xWd@cluster0.dhpzibd.mongodb.net/?appName=Cluster0
+      database: tvmaze_db
 
 tvmaze:
   base-url: https://api.tvmaze.com
