@@ -2,6 +2,8 @@ package com.example.api.controller;
 
 import com.example.api.dto.TvMazeShowResponse;
 import com.example.api.service.TvMazeSearchService;
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
@@ -22,6 +24,9 @@ class TvMazeSearchControllerTest {
 
     @Autowired
     private MockMvc mockMvc;
+
+        @Autowired
+        private ObjectMapper objectMapper;
 
     @MockBean
     private TvMazeSearchService tvMazeSearchService;
@@ -50,4 +55,26 @@ class TvMazeSearchControllerTest {
 
         verify(tvMazeSearchService).searchShows("girls");
     }
+
+        @Test
+        void shouldReturnFullShowById() throws Exception {
+                JsonNode payload = objectMapper.readTree("""
+                                {
+                                  "id": 139,
+                                  "name": "Girls",
+                                  "language": "English"
+                                }
+                                """);
+
+                when(tvMazeSearchService.getShowById(139L)).thenReturn(payload);
+
+                mockMvc.perform(get("/api/v1/show/139")
+                                                .accept(MediaType.APPLICATION_JSON))
+                                .andExpect(status().isOk())
+                                .andExpect(jsonPath("$.id").value(139))
+                                .andExpect(jsonPath("$.name").value("Girls"))
+                                .andExpect(jsonPath("$.language").value("English"));
+
+                verify(tvMazeSearchService).getShowById(139L);
+        }
 }

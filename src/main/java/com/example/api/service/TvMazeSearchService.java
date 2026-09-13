@@ -39,6 +39,17 @@ public class TvMazeSearchService {
                 .toList();
     }
 
+    public JsonNode getShowById(Long showId) {
+        if (showId == null || showId <= 0) {
+            throw new IllegalArgumentException("show_id must be greater than zero");
+        }
+
+        return tvMazeRestClient.get()
+                .uri("/shows/{showId}", Map.of("showId", showId))
+                .retrieve()
+                .body(JsonNode.class);
+    }
+
     private TvMazeShowResponse toResponse(JsonNode show) {
         return new TvMazeShowResponse(
                 longValue(show.path("id")),
