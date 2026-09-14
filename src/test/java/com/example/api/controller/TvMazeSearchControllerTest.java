@@ -74,7 +74,10 @@ class TvMazeSearchControllerTest {
                                 {
                                   "id": 139,
                                   "name": "Girls",
-                                  "language": "English"
+                                                                                                                                        "language": "English",
+                                                                                                                                        "comments": [
+                                                                                                                                                { "comment": "Excelente", "rating": 5 }
+                                                                                                                                        ]
                                 }
                                 """);
 
@@ -85,7 +88,9 @@ class TvMazeSearchControllerTest {
                                 .andExpect(status().isOk())
                                 .andExpect(jsonPath("$.id").value(139))
                                 .andExpect(jsonPath("$.name").value("Girls"))
-                                .andExpect(jsonPath("$.language").value("English"));
+                                .andExpect(jsonPath("$.language").value("English"))
+                                .andExpect(jsonPath("$.comments[0].comment").value("Excelente"))
+                                .andExpect(jsonPath("$.comments[0].rating").value(5));
 
                 verify(tvMazeSearchService).getShowById(139L);
         }

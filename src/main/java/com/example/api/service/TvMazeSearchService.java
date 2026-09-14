@@ -11,6 +11,8 @@ import com.example.api.repository.ShowCacheRepository;
 import com.example.api.repository.ShowCommentRepository;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.node.ArrayNode;
+import com.fasterxml.jackson.databind.node.ObjectNode;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 
@@ -100,12 +102,12 @@ public class TvMazeSearchService {
 
         Optional<ShowCacheDocument> cachedShow = showCacheRepository.findById(showId);
         if (cachedShow.isPresent()) {
-            return readJson(cachedShow.get().getPayloadJson());
+            return appendComments(readJson(cachedShow.get().getPayloadJson()), showId);
         }
 
         JsonNode payload = tvMazeClient.getShowById(showId);
         showCacheRepository.save(new ShowCacheDocument(showId, writeJson(payload), Instant.now()));
-        return payload;
+        return appendComments(payload, showId);
     }
 
     public StatusResponse saveComment(ShowCommentRequest request) {
@@ -186,5 +188,30 @@ public class TvMazeSearchService {
         } catch (Exception ex) {
             throw new IllegalStateException("could not read cached show payload", ex);
         }
+    }
+
+    private JsonNode appendComments(JsonNode showPayload, Long showId) {
+        ObjectNode response = (showPayload != null && showPayload.isObject())
+                ? ((ObjectNode) showPayload).deepCopy()
+                : objectMapper.createObjectNode();
+
+        if (!response.has("id") && showId != null) {
+            response.put("id", showId);
+        }
+
+        List<ShowCommentDocument> comments = showCommentRepository.findByShowId(showId);
+        ArrayNode commentsArray = objectMapper.createArrayNode();
+
+        if (comments != null) {
+            for (ShowCommentDocument comment : comments) {
+                ObjectNode commentNode = objectMapper.createObjectNode();
+                commentNode.put("comment", comment.getComment());
+                commentNode.put("rating", comment.getRating());
+                commentsArray.add(commentNode);
+            }
+        }
+
+        response.set("comments", commentsArray);
+        return response;
     }
 }
