@@ -1,5 +1,6 @@
 com\example\api\service\TvMazeSearchService.class
 com\example\api\controller\TvMazeSearchController.class
+com\example\api\dto\ShowCommentResponse.class
 com\example\api\StsMavenApiApplication.class
 com\example\api\dto\StatusResponse.class
 com\example\api\client\TvMazeClient.class

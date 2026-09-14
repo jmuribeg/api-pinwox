@@ -2,6 +2,7 @@ package com.example.api.service;
 
 import com.example.api.client.TvMazeClient;
 import com.example.api.dto.ShowCommentRequest;
+import com.example.api.dto.ShowCommentResponse;
 import com.example.api.dto.StatusResponse;
 import com.example.api.dto.TvMazeShowResponse;
 import com.example.api.model.ShowCacheDocument;
@@ -14,8 +15,11 @@ import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 
 import java.time.Instant;
+import java.util.Collection;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
+import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
 
 @Service
@@ -47,9 +51,45 @@ public class TvMazeSearchService {
             return List.of();
         }
 
-        return StreamSupport.stream(payload.spliterator(), false)
+        // Convert payload to list of shows
+        List<TvMazeShowResponse> shows = StreamSupport.stream(payload.spliterator(), false)
                 .map(node -> node.path("show"))
                 .map(this::toResponse)
+                .toList();
+
+        // Extract show IDs
+        Collection<Long> showIds = shows.stream()
+                .map(TvMazeShowResponse::id)
+                .filter(id -> id != null && id > 0)
+                .toList();
+
+        if (showIds.isEmpty()) {
+            return shows;
+        }
+
+        // Fetch all comments for these show IDs
+        List<ShowCommentDocument> allComments = showCommentRepository.findByShowIdIn(showIds);
+
+        // Group comments by showId
+        Map<Long, List<ShowCommentResponse>> commentsByShowId = allComments.stream()
+                .collect(Collectors.groupingBy(
+                        ShowCommentDocument::getShowId,
+                        Collectors.mapping(
+                                doc -> new ShowCommentResponse(doc.getComment(), doc.getRating()),
+                                Collectors.toList()
+                        )
+                ));
+
+        // Augment shows with comments
+        return shows.stream()
+                .map(show -> new TvMazeShowResponse(
+                        show.id(),
+                        show.name(),
+                        show.channel(),
+                        show.summary(),
+                        show.genres(),
+                        commentsByShowId.getOrDefault(show.id(), List.of())
+                ))
                 .toList();
     }
 
@@ -93,7 +133,8 @@ public class TvMazeSearchService {
                 textValue(show.path("name")),
                 resolveChannel(show),
                 textValue(show.path("summary")),
-                toGenres(show.path("genres"))
+                toGenres(show.path("genres")),
+                List.of()  // Comments will be added during search enrichment
         );
     }
 

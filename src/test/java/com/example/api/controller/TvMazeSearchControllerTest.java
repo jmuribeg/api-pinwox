@@ -1,5 +1,6 @@
 package com.example.api.controller;
 
+import com.example.api.dto.ShowCommentResponse;
 import com.example.api.dto.TvMazeShowResponse;
 import com.example.api.dto.ShowCommentRequest;
 import com.example.api.dto.StatusResponse;
@@ -42,7 +43,11 @@ class TvMazeSearchControllerTest {
                         "Girls",
                         "HBO",
                         "Summary",
-                        List.of("Drama", "Comedy")
+                        List.of("Drama", "Comedy"),
+                        List.of(
+                                new ShowCommentResponse("Great show!", 5),
+                                new ShowCommentResponse("Really enjoyed it", 4)
+                        )
                 )
         ));
 
@@ -54,7 +59,11 @@ class TvMazeSearchControllerTest {
                 .andExpect(jsonPath("$[0].name").value("Girls"))
                 .andExpect(jsonPath("$[0].channel").value("HBO"))
                 .andExpect(jsonPath("$[0].summary").value("Summary"))
-                .andExpect(jsonPath("$[0].genres[0]").value("Drama"));
+                .andExpect(jsonPath("$[0].genres[0]").value("Drama"))
+                .andExpect(jsonPath("$[0].comments[0].comment").value("Great show!"))
+                .andExpect(jsonPath("$[0].comments[0].rating").value(5))
+                .andExpect(jsonPath("$[0].comments[1].comment").value("Really enjoyed it"))
+                .andExpect(jsonPath("$[0].comments[1].rating").value(4));
 
         verify(tvMazeSearchService).searchShows("girls");
     }

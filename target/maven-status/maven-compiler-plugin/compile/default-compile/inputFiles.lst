@@ -5,6 +5,7 @@ C:\ATT\falcon-front\sts-maven-api\src\main\java\com\example\api\controller\ShowC
 C:\ATT\falcon-front\sts-maven-api\src\main\java\com\example\api\controller\TvMazeSearchController.java
 C:\ATT\falcon-front\sts-maven-api\src\main\java\com\example\api\dto\CreateShowRequest.java
 C:\ATT\falcon-front\sts-maven-api\src\main\java\com\example\api\dto\ShowCommentRequest.java
+C:\ATT\falcon-front\sts-maven-api\src\main\java\com\example\api\dto\ShowCommentResponse.java
 C:\ATT\falcon-front\sts-maven-api\src\main\java\com\example\api\dto\StatusResponse.java
 C:\ATT\falcon-front\sts-maven-api\src\main\java\com\example\api\dto\TvMazeShowResponse.java
 C:\ATT\falcon-front\sts-maven-api\src\main\java\com\example\api\handler\ApiExceptionHandler.java
